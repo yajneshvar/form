@@ -1,7 +1,7 @@
 package forms.serverless.google
 
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport
-import com.google.api.client.json.jackson2.JacksonFactory
+import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.gmail.Gmail
 import com.google.api.services.gmail.GmailScopes
 import com.google.api.services.gmail.model.Message
@@ -10,6 +10,7 @@ import com.google.auth.oauth2.GoogleCredentials
 import org.apache.commons.codec.binary.Base64
 import java.io.ByteArrayOutputStream
 import java.io.IOException
+import java.io.InputStream
 import java.util.*
 import javax.mail.MessagingException
 import javax.mail.Session
@@ -20,8 +21,8 @@ import javax.mail.internet.MimeMessage
 class GoogleGmailService {
 
     private val httpTransport = GoogleNetHttpTransport.newTrustedTransport()
-    private val jacksonFactory: JacksonFactory = JacksonFactory.getDefaultInstance()
-    private val credentials: GoogleCredentials = GoogleCredentials.getApplicationDefault().createScoped(GmailScopes.GMAIL_SEND).createDelegated("yajneshvar@tst-ims.com")
+    private val jacksonFactory = GsonFactory.getDefaultInstance()
+    private val credentials = GoogleCredentials.fromStream(readCredentials()).createScoped(GmailScopes.GMAIL_SEND).createDelegated("yajneshvar@tst-ims.com")
     val GMAIL = Gmail.Builder(httpTransport, jacksonFactory, HttpCredentialsAdapter(credentials)).build()
     /**
      * Create a MimeMessage using the parameters provided.
@@ -74,4 +75,10 @@ class GoogleGmailService {
         println(returnedMessage.id)
         println(returnedMessage.toPrettyString())
     }
+
+    companion object {
+        fun readCredentials(): InputStream = this::class.java.getResourceAsStream("/GoogleCredential.json")
+    }
+
 }
+

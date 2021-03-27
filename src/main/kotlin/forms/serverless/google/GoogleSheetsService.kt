@@ -1,7 +1,7 @@
 package forms.serverless.google
 
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport
-import com.google.api.client.json.jackson2.JacksonFactory
+import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.sheets.v4.Sheets
 import com.google.api.services.sheets.v4.SheetsScopes
 import com.google.api.services.sheets.v4.model.AppendValuesResponse
@@ -14,7 +14,7 @@ import com.google.auth.oauth2.GoogleCredentials
 class GoogleSheetsService {
 
     private val httpTransport = GoogleNetHttpTransport.newTrustedTransport()
-    private val jacksonFactory: JacksonFactory = JacksonFactory.getDefaultInstance()
+    private val jacksonFactory = GsonFactory.getDefaultInstance()
     private val credentials: GoogleCredentials = GoogleCredentials.getApplicationDefault().createScoped(SheetsScopes.SPREADSHEETS, SheetsScopes.DRIVE_FILE)
     val SHEETS: Sheets = Sheets.Builder(httpTransport, jacksonFactory, HttpCredentialsAdapter(credentials))
             .setApplicationName("FORMS")

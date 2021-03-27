@@ -10,6 +10,7 @@ plugins {
     // Apply the org.jetbrains.kotlin.jvm Plugin to add support for Kotlin.
     id("org.jetbrains.kotlin.jvm") version "1.4.20"
 
+        id("com.github.johnrengelman.shadow") version "6.1.0"
     // Apply the application plugin to add support for building a CLI application in Java.
     // application
 }
@@ -53,12 +54,16 @@ dependencies {
 
     // Use the Kotlin JUnit integration.
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
+
+    implementation( "com.google.api-client:google-api-client:1.31.2")
 }
+
 
 //application {
 //    // Define the main class for the application.
 //    mainClass.set("forms.serverless.AppKt")
 //}
+
 
 task<JavaExec>("runFunction") {
     main = "com.google.cloud.functions.invoker.runner.Invoker"

@@ -11,8 +11,12 @@ fun Order.toList(): List<List<String>> {
 fun Order.toEmailText(): String {
     return """
         Successfully created Order for ${this.customerId}
+        Distributor: ${this.creator}
+        ${this.orderId?.let { "Order Id: $it" }}
         Order Info:
         ${books.map { "${it.title} : ${it.quantity}" }.joinToString(separator="\n")}
+        Payment Notes: ${this.paymentNotes}
+        Delivery Notes: ${this.deliveryNotes}
     """.trimIndent()
 }
 
