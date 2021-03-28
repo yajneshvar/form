@@ -56,9 +56,9 @@ class FormFunction : HttpFunction {
     }
 
     fun handleGetUsers(request: HttpRequest, response: HttpResponse) {
-        val values = googleClient.readFromSpreadSheet(googleClient.SPREADSHEET_ID, "Sheet1")
+        val values = googleClient.readFromSpreadSheet(googleClient.SPREADSHEET_ID, "Customer")
         if (values != null) {
-            val userReponses = values.map {
+            val userReponses = values.drop(1).map {
                 val stringValues = it as List<String>
                 println(stringValues.toString())
                 UserResponse(stringValues[0], stringValues[1], stringValues[2], stringValues[5], stringValues[8])
@@ -76,7 +76,7 @@ class FormFunction : HttpFunction {
         println(payload)
         val user: User = objectMapper.readValue(payload)
         user.id = "${user.firstName}-${user.address.city}-${ZonedDateTime.now(ZoneOffset.UTC).toEpochSecond()}"
-        val sheetResponse = googleClient.writeToSpreadSheet(googleClient.SPREADSHEET_ID, listOf(user.toList()), "Sheet1!A1")
+        val sheetResponse = googleClient.writeToSpreadSheet(googleClient.SPREADSHEET_ID, listOf(user.toList()), "Customer!A1")
         if (sheetResponse != null) {
             response.writer.write(objectMapper.writeValueAsString(user.toUserResponse()))
             response.setStatusCode(HttpStatus.SC_OK)
