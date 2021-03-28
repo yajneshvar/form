@@ -13,6 +13,7 @@ fun Order.toEmailText(): String {
         Successfully created Order for ${this.customerId}
         Distributor: ${this.creator}
         ${this.orderId?.let { "Order Id: $it" }}
+        Channel: ${this.channel}
         Order Info:
         ${books.map { "${it.title} : ${it.quantity}" }.joinToString(separator="\n")}
         Payment Notes: ${this.paymentNotes}
