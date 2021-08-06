@@ -6,22 +6,20 @@ import com.google.cloud.functions.HttpResponse
 import forms.serverless.google.GoogleSheetsService
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import forms.serverless.google.FirestoreService
 import forms.serverless.google.GoogleGmailService
 import forms.serverless.model.*
 import org.apache.http.HttpStatus
-import org.apache.http.protocol.HTTP
-import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.ZoneOffset
-import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-import java.util.*
+
 
 class FormFunction : HttpFunction {
 
     private val googleClient = GoogleSheetsService()
     private val googleEmailClient = GoogleGmailService()
     private val objectMapper = jacksonObjectMapper()
+    private val firestoreService = FirestoreService()
 
     override fun service(request: HttpRequest?, response: HttpResponse?) {
 
@@ -46,6 +44,7 @@ class FormFunction : HttpFunction {
 
         when {
             request.isFor("/user", "POST") -> handleNewUser(request, response)
+            request.isFor("/user/.*", "GET", true) -> handleGetUserById(request, response)
             request.isFor("/order", "POST") -> handleNewOrder(request, response)
             request.isFor("/users", "GET") -> handleGetUsers(request, response)
             request.isFor("/books", "GET") -> handleGetBooks(request, response)
@@ -56,12 +55,10 @@ class FormFunction : HttpFunction {
     }
 
     fun handleGetUsers(request: HttpRequest, response: HttpResponse) {
-        val values = googleClient.readFromSpreadSheet(googleClient.SPREADSHEET_ID, "Customer")
+        val values = firestoreService.getUsers()
         if (values != null) {
-            val userReponses = values.drop(1).map {
-                val stringValues = it as List<String>
-                println(stringValues.toString())
-                UserResponse(stringValues[0], stringValues[1], stringValues[2], stringValues[5], stringValues[8])
+            val userReponses = values.map {
+                it.toUserResponse()
             }
             response.writer.write(objectMapper.writeValueAsString(userReponses))
             response.setStatusCode(HttpStatus.SC_OK)
@@ -70,12 +67,24 @@ class FormFunction : HttpFunction {
         }
     }
 
+    fun handleGetUserById(request: HttpRequest, response: HttpResponse) {
+        val id = request.path.removePrefix("/user/")
+        val user = firestoreService.getUserById(id)
+        if (user != null) {
+            response.writer.write(objectMapper.writeValueAsString(user))
+            response.setStatusCode(HttpStatus.SC_OK)
+        } else {
+            response.setStatusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR)
+        }
+
+    }
+
     fun handleNewUser(request: HttpRequest, response: HttpResponse) {
         val payload = request.reader.readText()
         println("-----------")
         println(payload)
         val user: User = objectMapper.readValue(payload)
-        user.id = "${user.firstName}-${user.address.city}-${ZonedDateTime.now(ZoneOffset.UTC).toEpochSecond()}"
+        firestoreService.upsertUser(user)
         val sheetResponse = googleClient.writeToSpreadSheet(googleClient.SPREADSHEET_ID, listOf(user.toList()), "Customer!A1")
         if (sheetResponse != null) {
             response.writer.write(objectMapper.writeValueAsString(user.toUserResponse()))
@@ -91,7 +100,7 @@ class FormFunction : HttpFunction {
         println(payload)
         val order: Order = objectMapper.readValue(payload)
         order.createdDate = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-        order.orderId = UUID.randomUUID().toString()
+        firestoreService.upsertOrder(order)
         val sheetResponse = googleClient.writeToSpreadSheet(googleClient.SPREADSHEET_ID, order.toList(), "Order!A:H")
         val email = googleEmailClient.createEmail(order.creator, "yajneshvar@tst-ims.com", "New Order for ${order.customerId}", order.toEmailText() )
         googleEmailClient.sendEmail("yajneshvar@tst-ims.com", email!!)
@@ -121,7 +130,19 @@ class FormFunction : HttpFunction {
         response.writer.write(objectMapper.writeValueAsString(channelTypes))
     }
 
-    fun HttpRequest.isFor(path: String, method: String): Boolean {
+    fun handleConsignment(request: HttpRequest, response: HttpResponse) {
+        val payload = request.reader.readText();
+        val consignment: Consignment = objectMapper.readValue(payload)
+
+    }
+
+    fun HttpRequest.isFor(path: String, method: String, useRegex: Boolean = false): Boolean {
+        println(this.path)
+        if (useRegex) {
+            val regex = Regex(path, RegexOption.DOT_MATCHES_ALL)
+            println(regex.pattern)
+            return regex.matches(this.path) && this.method == method
+        }
         return this.path == path && this.method == method
     }
 

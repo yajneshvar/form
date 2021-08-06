@@ -1,27 +1,67 @@
 package forms.serverless.model
 
 interface ListValues {
-    fun toList(): List<String>
+    fun toList(): List<String?>
 }
 
-data class User (var id: String?, val firstName: String, val lastName: String?, val address: Address, val email: String, val cellPhone: String?, val homePhone: String?, val creator: String) : ListValues {
-    override fun toList(): List<String> {
-        return listOf(id.orEmpty(), firstName, lastName.orEmpty()) + address.toList() + listOf(email, cellPhone.orEmpty(), homePhone.orEmpty(), creator)
+class User () : ListValues {
+    var id: String = ""
+    var firstName: String = ""
+    var lastName: String = ""
+    var address: Address? = null
+    var email: String = ""
+    var cellPhone: String = ""
+    var homePhone: String = ""
+    var creator: String? = null
+    override fun toList(): List<String?> {
+        return listOf(id, firstName, lastName) + address!!.toList() + listOf(email, cellPhone, homePhone, creator)
     }
 
 }
 
 fun User.toUserResponse(): UserResponse {
-    return UserResponse(this.id, this.firstName, this.lastName, this.address.postalCode, this.email)
+    return UserResponse().let {
+        it.id = this.id
+        it.firstName = this.firstName
+        it.lastName = this.lastName
+        it.postalCode = this.address!!.postalCode
+        it.email = this.email
+        it
+    }
+}
+
+fun User.toUserListResponse(): UserList {
+    return UserList().let {
+        it.id = this.id
+        it.firstName  = this.firstName
+        it.lastName = this.lastName
+        it
+    }
 }
 
 
-data class UserResponse (var id: String?, val firstName: String, val lastName: String?, val postalCode: String, val email: String)
+class UserResponse () {
+    var id: String=""
+    var firstName: String = ""
+    var lastName: String = ""
+    var postalCode: String = ""
+    var email: String = ""
+}
 
+class UserList() {
+    var id: String = ""
+    var firstName: String = ""
+    var lastName: String = ""
+}
 
-data class Address(val line: String, val line2: String?, val postalCode: String, val city: String, val country: String?) : ListValues {
+class Address() : ListValues {
+    var line: String = ""
+    var line2: String = ""
+    var postalCode: String = ""
+    var city: String = ""
+    var country: String = ""
+
     override fun toList(): List<String> {
-        return listOf(line, line2.orEmpty(), postalCode, city, country.orEmpty())
+        return listOf(line, line2, postalCode, city, country)
     }
-
 }

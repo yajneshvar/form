@@ -49,6 +49,9 @@ dependencies {
     // To run function locally using Functions Framework's local invoker
     invoker("com.google.cloud.functions.invoker:java-function-invoker:1.0.0-alpha-2-rc5")
 
+    // https://mvnrepository.com/artifact/com.google.cloud/google-cloud-firestore
+    implementation("com.google.cloud:google-cloud-firestore:2.6.2")
+
     // Use the Kotlin test library.
     testImplementation("org.jetbrains.kotlin:kotlin-test")
 

@@ -39,7 +39,7 @@ class GoogleSheetsService {
         return response.toPrettyString()
     }
 
-    fun writeToSpreadSheet(spreadSheetId: String, values: List<List<Any>>, range: String): AppendValuesResponse? {
+    fun writeToSpreadSheet(spreadSheetId: String, values: List<List<Any?>>, range: String): AppendValuesResponse? {
         val valueRange = ValueRange()
                 .setMajorDimension("ROWS")
                 .setValues(values)
