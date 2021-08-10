@@ -1,0 +1,6 @@
+applicationType: default
+defaultPackage: forms
+testFramework: junit
+sourceLanguage: kotlin
+buildTool: gradle_kotlin
+features: [annotation-api, app-name, gradle, http-client, junit, kotlin, kotlin-application, kotlin-extension-functions, log4j2, netty-server, openapi, readme, security-annotations, security-jwt, shade, yaml]

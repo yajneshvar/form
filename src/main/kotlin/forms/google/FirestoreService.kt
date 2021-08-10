@@ -1,16 +1,18 @@
-package forms.serverless.google
+package forms.google
 
 import com.google.auth.oauth2.GoogleCredentials
 import com.google.cloud.firestore.Firestore
 import com.google.cloud.firestore.FirestoreOptions
-import forms.serverless.model.Consignment
-import forms.serverless.model.Order
-import forms.serverless.model.User
+import forms.model.Consignment
+import forms.model.Order
+import forms.model.User
 import java.util.*
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class FirestoreService {
-    private val credentials = GoogleCredentials.getApplicationDefault();
+@Singleton
+class FirestoreService constructor(@Inject var credentials: GoogleCredentials) {
     private val firestoreOptions = FirestoreOptions.getDefaultInstance().toBuilder()
             .setProjectId("forms-304923")
             .setCredentials(credentials)

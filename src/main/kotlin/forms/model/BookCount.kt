@@ -1,4 +1,4 @@
-package forms.serverless.model
+package forms.model
 
 data class BookCount(val book: Book, val startCount: Int, val endCount: Int)
 

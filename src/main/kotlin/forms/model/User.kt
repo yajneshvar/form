@@ -1,4 +1,4 @@
-package forms.serverless.model
+package forms.model
 
 interface ListValues {
     fun toList(): List<String?>

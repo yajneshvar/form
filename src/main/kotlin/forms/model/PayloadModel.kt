@@ -1,6 +1,6 @@
-package forms.serverless.model
+package forms.model
 
-data class Order(var createdDate: String?, var orderId: String?, var customerId: String?, var type: String = "Sale",  var books: List<BookQuantity> = emptyList(), var channel: String?, var delivery: Boolean = false, var deliveryNotes: String = "", var paymentNotes: String = "", var additionalNotes: String = "", var creator: String = "")
+data class Order(var createdDate: String?, var orderId: String?, var customerId: String?, var type: String = "Sale", var books: List<BookQuantity> = emptyList(), var channel: String?, var delivery: Boolean = false, var deliveryNotes: String = "", var paymentNotes: String = "", var additionalNotes: String = "", var creator: String = "")
 
 fun Order.toList(): List<List<String?>> {
     return books.map {

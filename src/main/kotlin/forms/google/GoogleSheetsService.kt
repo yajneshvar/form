@@ -1,4 +1,4 @@
-package forms.serverless.google
+package forms.google
 
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport
 import com.google.api.client.json.gson.GsonFactory
@@ -10,13 +10,14 @@ import com.google.api.services.sheets.v4.model.SpreadsheetProperties
 import com.google.api.services.sheets.v4.model.ValueRange
 import com.google.auth.http.HttpCredentialsAdapter
 import com.google.auth.oauth2.GoogleCredentials
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class GoogleSheetsService {
-
+@Singleton
+class GoogleSheetsService constructor(@Inject var credentials: GoogleCredentials){
     private val httpTransport = GoogleNetHttpTransport.newTrustedTransport()
     private val jacksonFactory = GsonFactory.getDefaultInstance()
-    private val credentials: GoogleCredentials = GoogleCredentials.getApplicationDefault().createScoped(SheetsScopes.SPREADSHEETS, SheetsScopes.DRIVE_FILE)
-    val SHEETS: Sheets = Sheets.Builder(httpTransport, jacksonFactory, HttpCredentialsAdapter(credentials))
+    val SHEETS: Sheets = Sheets.Builder(httpTransport, jacksonFactory, HttpCredentialsAdapter( credentials.createScoped(SheetsScopes.SPREADSHEETS, SheetsScopes.DRIVE_FILE)))
             .setApplicationName("FORMS")
             .build()
 //    val SPREADSHEET_ID = "1960CUzLpza43RD_2QAnnXutFYSSr5l3WiwKvfD_4N-I"
