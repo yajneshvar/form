@@ -14,6 +14,7 @@ plugins {
     id("com.github.johnrengelman.shadow") version "7.0.0"
     id("io.micronaut.application") version "1.5.4"
     id("org.jetbrains.kotlin.plugin.allopen") version "1.4.32"
+    id("com.google.cloud.tools.jib") version "2.8.0"
     // Apply the application plugin to add support for building a CLI application in Java.
     // application
 }
@@ -23,7 +24,6 @@ val compileKotlin: KotlinCompile by tasks
 compileKotlin.kotlinOptions.jvmTarget = "1.8"
 
 repositories {
-    // Use JCenter for resolving dependencies.
     mavenCentral()
 }
 
@@ -46,13 +46,15 @@ val invoker by configurations.creating
 dependencies {
 
     kapt("io.micronaut.openapi:micronaut-openapi")
-//    kapt("io.micronaut.security:micronaut-security-annotations")
+    kapt("io.micronaut.security:micronaut-security-annotations")
+    implementation("io.micronaut.security:micronaut-security-jwt")
     implementation("io.micronaut:micronaut-http-client")
     implementation("io.micronaut:micronaut-runtime")
     implementation("io.micronaut.kotlin:micronaut-kotlin-extension-functions")
     implementation("io.micronaut.kotlin:micronaut-kotlin-runtime")
-//    implementation("io.micronaut.security:micronaut-security-jwt")
-    implementation("io.swagger.core.v3:swagger-annotations")
+//    implementation("io.micronaut.reactor:micronaut-reactor:2.0.0")
+    // https://mvnrepository.com/artifact/io.swagger.core.v3/swagger-annotations
+    implementation("io.swagger.core.v3:swagger-annotations:2.1.10")
     implementation("javax.annotation:javax.annotation-api")
     implementation("org.apache.logging.log4j:log4j-core:2.14.1")
     implementation("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
@@ -66,12 +68,17 @@ dependencies {
     // Align versions of all Kotlin components
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
 
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.5.2")
+
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.12.1")
     // Use the Kotlin JDK 8 standard library.
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
     implementation("com.google.apis:google-api-services-sheets:v4-rev581-1.25.0")
     implementation("com.google.auth:google-auth-library-oauth2-http:0.23.0")
+
+    implementation("com.google.firebase:firebase-admin:8.0.1")
 
     //implementation("javax.mail:javax.mail-api:1.6.2")
     // https://mvnrepository.com/artifact/com.sun.mail/javax.mail

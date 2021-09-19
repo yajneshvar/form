@@ -2,7 +2,8 @@ micronaut:
   application:
     name: forms
   security:
-    enabled: false
+    enabled: true
+    reject-not-found: false
   server:
     cors:
       enabled: true

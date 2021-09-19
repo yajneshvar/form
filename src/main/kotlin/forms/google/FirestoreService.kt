@@ -19,7 +19,6 @@ class FirestoreService constructor(@Inject var credentials: GoogleCredentials) {
             .build();
     val db: Firestore = firestoreOptions.service;
 
-
     fun upsertUser(user: User) : User {
         if (user.id.isEmpty()) {
             user.id = UUID.randomUUID().toString();

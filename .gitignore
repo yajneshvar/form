@@ -1,5 +1,7 @@
 # Ignore Gradle project-specific cache directory
 .gradle
-
+src/main/resources/GoogleCredential.json
+gradle
+gcloud.credential
 # Ignore Gradle build output directory
 build
