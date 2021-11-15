@@ -12,7 +12,7 @@ import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.InputStream
 import java.util.*
-import javax.inject.Singleton
+import jakarta.inject.Singleton
 import javax.mail.MessagingException
 import javax.mail.Session
 import javax.mail.internet.InternetAddress

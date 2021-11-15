@@ -8,8 +8,8 @@ import forms.model.Order
 import forms.model.User
 import java.util.*
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
-import javax.inject.Singleton
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
 
 @Singleton
 class FirestoreService constructor(@Inject var credentials: GoogleCredentials) {

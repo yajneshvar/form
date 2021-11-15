@@ -3,7 +3,7 @@ package forms.google
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseToken
-import javax.inject.Singleton
+import jakarta.inject.Singleton
 
 @Singleton
 class FirebaseAuthService {

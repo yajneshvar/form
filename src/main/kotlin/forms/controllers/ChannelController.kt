@@ -7,7 +7,7 @@ import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
 import io.micronaut.security.annotation.Secured
 import io.micronaut.security.rules.SecurityRule
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 @Secured(SecurityRule.IS_AUTHENTICATED)
 @Controller("/channels")

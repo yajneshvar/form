@@ -14,7 +14,7 @@ import io.micronaut.security.annotation.Secured
 import io.micronaut.security.rules.SecurityRule
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 @Secured(SecurityRule.IS_AUTHENTICATED)
 @Controller("/orders")

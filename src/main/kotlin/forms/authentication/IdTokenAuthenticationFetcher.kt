@@ -1,17 +1,18 @@
 package forms.authentication
 
+import com.nimbusds.jwt.JWTClaimsSet
 import forms.google.FirebaseAuthService
 import io.micronaut.http.HttpRequest
 import io.micronaut.security.authentication.Authentication
-import io.micronaut.security.authentication.DefaultAuthentication
 import io.micronaut.security.filters.AuthenticationFetcher
+import io.micronaut.security.token.jwt.validator.AuthenticationJWTClaimsSetAdapter
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.reactive.asPublisher
 import org.reactivestreams.Publisher
 import org.slf4j.LoggerFactory
-import javax.inject.Inject
-import javax.inject.Singleton
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
 
 @Singleton
 class IdTokenAuthenticationFetcher @Inject constructor(
@@ -24,7 +25,11 @@ class IdTokenAuthenticationFetcher @Inject constructor(
             if (authorization?.isPresent == true) {
                 val idToken = authorization.get().substringAfter(" ")
                 val firebaseToken = firebaseAuthService.verifyIdToken(idToken)
-                emit(DefaultAuthentication(firebaseToken.name, mapOf("email" to firebaseToken.email, "uid" to firebaseToken.uid)))
+                val jwtClaimset = JWTClaimsSet.Builder()
+                        .subject(firebaseToken.email)
+                        .jwtID(firebaseToken.uid)
+                        .build()
+                emit(AuthenticationJWTClaimsSetAdapter(jwtClaimset))
             }
         }
         .catch { log.warn("Invalid authorization", it) }
