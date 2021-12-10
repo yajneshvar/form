@@ -1,7 +1,9 @@
 package forms.controllers
 
+import forms.google.FirestoreService
 import forms.google.GoogleSheetsService
 import forms.model.Book
+import forms.model.Item
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.HttpStatus
 import io.micronaut.http.annotation.Controller
@@ -15,6 +17,7 @@ import jakarta.inject.Inject
 class BookController {
 
     @Inject lateinit var googleSheetsService: GoogleSheetsService
+    @Inject lateinit var firestoreService: FirestoreService
 
     @Get
     fun books(): HttpResponse<List<Book>> {
@@ -28,6 +31,12 @@ class BookController {
         } else {
             HttpResponse.accepted<List<Book>>().body(books)
         }
+    }
+
+    @Get
+    fun items(): HttpResponse<List<Item>> {
+        val items = firestoreService.getItems()
+        return HttpResponse.accepted<List<Book>>().body(Item)
     }
 
 }

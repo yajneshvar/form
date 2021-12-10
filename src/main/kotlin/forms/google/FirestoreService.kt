@@ -4,6 +4,7 @@ import com.google.auth.oauth2.GoogleCredentials
 import com.google.cloud.firestore.Firestore
 import com.google.cloud.firestore.FirestoreOptions
 import forms.model.Consignment
+import forms.model.Item
 import forms.model.Order
 import forms.model.User
 import java.util.*
@@ -72,5 +73,10 @@ class FirestoreService constructor(@Inject var credentials: GoogleCredentials) {
 
     fun getConsigmentById(id: String): Consignment? {
         return db.collection("consigments").document(id).get().get().toObject(Consignment::class.java)
+    }
+
+    fun getItems(): List<Item> {
+        val query = db.collection("items").get();
+        return query.get(30, TimeUnit.SECONDS).documents.map { it.toObject(Item::class.java) }
     }
 }
