@@ -3,5 +3,7 @@
 src/main/resources/GoogleCredential.json
 gradle
 gcloud.credential
+gcloud-credential.json 
 # Ignore Gradle build output directory
 build
+utils

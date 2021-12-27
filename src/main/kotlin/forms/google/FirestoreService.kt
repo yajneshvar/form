@@ -5,6 +5,7 @@ import com.google.cloud.firestore.Firestore
 import com.google.cloud.firestore.FirestoreOptions
 import forms.model.Consignment
 import forms.model.Item
+import forms.model.Product
 import forms.model.Order
 import forms.model.User
 import java.util.*
@@ -78,5 +79,24 @@ class FirestoreService constructor(@Inject var credentials: GoogleCredentials) {
     fun getItems(): List<Item> {
         val query = db.collection("items").get();
         return query.get(30, TimeUnit.SECONDS).documents.map { it.toObject(Item::class.java) }
+    }
+    
+    fun upsertItems(items: List<Item>): List<Item> {
+        items.chunked(400).forEach {
+            val batch = db.batch()
+            it.map { item -> 
+                val id = item.id ?: UUID.randomUUID().toString()
+                item.id = id
+                val itemsRef = db.collection("items").document(id)
+                batch.set(itemsRef, item)   
+            }
+            batch.commit().get()
+        }
+        return items
+    }
+    
+    fun getProducts(): List<Product> {
+        val query = db.collection("products").get();
+        return query.get(30, TimeUnit.SECONDS).documents.map { it.toObject(Product::class.java)}
     }
 }
