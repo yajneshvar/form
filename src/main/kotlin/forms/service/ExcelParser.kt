@@ -33,8 +33,11 @@ class ExcelParser {
                 id = null
                 title = it.getCell(0).getStringCellValue()
                 code = it.getCell(1).getStringCellValue()
-                category = it.getCell(3).getStringCellValue()
-                metadata = mapOf("unit" to it.getCell(2).getNumericCellValue().toString())
+                category = "BOOK"
+                metadata = mapOf(
+                    "unit" to it.getCell(2).getNumericCellValue().toString(),
+                    "type" to it.getCell(3).getStringCellValue()
+                )
             }
         }
     }

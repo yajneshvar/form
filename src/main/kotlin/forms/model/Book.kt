@@ -2,7 +2,7 @@ package forms.model
 
 data class Book(val title: String, val code: String, val type: String)
 
-data class ItemOrProduct(val id: String, val title: String, val code: String, val type: String)
+data class ItemOrProduct(val id: String, val title: String, val code: String, val type: String, val productOrItemType: String)
 
 class Item() {
     var id: String? = null
@@ -13,7 +13,7 @@ class Item() {
 }
 
 fun Item.toItemOrProduct(): ItemOrProduct {
-    return ItemOrProduct(this.id!!, this.title!!, this.code!!, "Item")
+    return ItemOrProduct(this.id!!, this.title!!, this.code!!, this.metadata["type"]!!,"Item")
 }
 
 class Product() {
@@ -25,7 +25,7 @@ class Product() {
 }
 
 fun Product.toItemOrProduct(): ItemOrProduct {
-    return ItemOrProduct(this.id!!, this.title!!, this.code!!, "Product")
+    return ItemOrProduct(this.id!!, this.title!!, this.code!!, this.category!!, "Product")
 }
 
 data class Quantity(var id: String, val startCount: Int, val category: String, val title: String)
