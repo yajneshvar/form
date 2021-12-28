@@ -5,6 +5,8 @@ import forms.google.GoogleSheetsService
 import forms.service.ExcelParser
 import forms.model.Book
 import forms.model.Item
+import forms.model.ItemOrProduct
+import forms.model.toItemOrProduct
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.HttpStatus
 import io.micronaut.http.annotation.Controller
@@ -44,9 +46,13 @@ class BookController {
         }
     }
 
-    fun items(): HttpResponse<List<Item>> {
+    @Get(value = "/items")
+    @PermitAll
+    fun itemsOrProducts(): HttpResponse<List<ItemOrProduct>> {
         val items = firestoreService.getItems()
-        return HttpResponse.accepted<List<Item>>().body(items)
+        val products = firestoreService.getProducts()
+        val itemsOrProducts = items.map { it.toItemOrProduct() } + products.map { it.toItemOrProduct() } 
+        return HttpResponse.accepted<List<ItemOrProduct>>().body(itemsOrProducts)
     }
     
     @Post(value = "/upload", consumes = [MediaType.ALL]) 

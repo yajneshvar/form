@@ -1,6 +1,26 @@
 package forms.model
 
-data class Order(var createdDate: String?, var orderId: String?, var customerId: String?, var type: String = "Sale", var books: List<BookQuantity> = emptyList(), var channel: String?, var delivery: Boolean = false, var deliveryNotes: String = "", var paymentNotes: String = "", var additionalNotes: String = "", var creator: String = "")
+data class Order(
+    var createdDate: String?,
+    var orderId: String?, 
+    var customerId: String?, 
+    var recepient: Recepient?,
+    var type: String = "Sale", 
+    var books: List<BookQuantity> = emptyList(),
+    var quantities: List<Quantity> = emptyList(),
+    var channel: String?, 
+    var delivery: Boolean = false, 
+    var deliveryNotes: String = "", 
+    var paymentNotes: String = "", 
+    var additionalNotes: String = "", 
+    var creator: String = ""
+    )
+    
+data class Recepient(
+    var customerId: String?,
+    var anonymousUser: String?,
+    var additionalNotes: String?
+)
 
 fun Order.toList(): List<List<String?>> {
     return books.map {
@@ -19,6 +39,7 @@ fun Order.toEmailText(): String {
         Channel: ${this.channel}
         Order Info:
         ${books.map { "${it.title} : ${it.startCount}" }.joinToString(separator="\n")}
+        ${quantities.map { "${it.title} : ${it.startCount}" }.joinToString(separator="\n")}}
         Payment Notes: ${this.paymentNotes}
         $deliveryText
         $deliveryNotesText
@@ -26,3 +47,7 @@ fun Order.toEmailText(): String {
 }
 
 data class BookQuantity(val title: String, val code: String, val type: String, val startCount: Int)
+
+data class OrderQuantity(
+    var quantities: List<Quantity> = emptyList()
+)

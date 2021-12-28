@@ -29,7 +29,13 @@ class ExcelParser {
         val headerToIndex = getHeaderToIndex(headers)
         val entries = sheet.drop(1)
         return entries.map {
-            Item(null, it.getCell(0).getStringCellValue(), it.getCell(1).getStringCellValue(), it.getCell(3).getStringCellValue(), mapOf("unit" to it.getCell(2).getNumericCellValue().toString()))
+            Item().apply {
+                id = null
+                title = it.getCell(0).getStringCellValue()
+                code = it.getCell(1).getStringCellValue()
+                category = it.getCell(3).getStringCellValue()
+                metadata = mapOf("unit" to it.getCell(2).getNumericCellValue().toString())
+            }
         }
     }
     
