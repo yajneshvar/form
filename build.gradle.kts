@@ -15,6 +15,7 @@ plugins {
     id("io.micronaut.application") version "1.5.4"
     id("org.jetbrains.kotlin.plugin.allopen") version "1.4.32"
     id("com.google.cloud.tools.jib") version "2.8.0"
+    id("org.openrewrite.rewrite") version "5.12.0"
     // Apply the application plugin to add support for building a CLI application in Java.
     // application
 }
@@ -114,9 +115,24 @@ dependencies {
     
     // https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml
     implementation("org.apache.poi:poi-ooxml:3.9")
+    
+    rewrite("org.openrewrite.recipe:rewrite-micronaut:1.3.0")
 
 
 }
+
+rewrite {
+   activeRecipe("org.openrewrite.java.micronaut.Micronaut2to3Migration")
+}
+
+
+jib {
+    to {
+        image = "gcr.io/forms-304923/forms-1.0"
+    }
+}
+
+// forms-304923
 
 //task<JavaExec>("runFunction") {
 //    main = "com.google.cloud.functions.invoker.runner.Invoker"

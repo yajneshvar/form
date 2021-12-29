@@ -47,7 +47,7 @@ class BookController {
     }
 
     @Get(value = "/items")
-    @PermitAll
+    // @PermitAll
     fun itemsOrProducts(): HttpResponse<List<ItemOrProduct>> {
         val items = firestoreService.getItems()
         val products = firestoreService.getProducts()
@@ -55,7 +55,7 @@ class BookController {
         return HttpResponse.accepted<List<ItemOrProduct>>().body(itemsOrProducts)
     }
     
-    @PermitAll
+    // @PermitAll
     @Post(value = "/upload", consumes = [MediaType.ALL]) 
     fun uploadBytes(file: ByteArray, fileName: String): HttpResponse<String> { 
         return try {

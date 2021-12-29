@@ -28,4 +28,4 @@ fun Product.toItemOrProduct(): ItemOrProduct {
     return ItemOrProduct(this.id!!, this.title!!, this.code!!, this.category!!, "Product")
 }
 
-data class Quantity(var id: String, val startCount: Int, val category: String, val title: String)
+data class Quantity(var id: String, val startCount: Int, val productOrItemType: String, val title: String, val code: String)

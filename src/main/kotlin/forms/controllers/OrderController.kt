@@ -33,7 +33,7 @@ class OrderController {
         order.createdDate = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
         firestoreService.upsertOrder(order)
         val sheetResponse = googleSheetsService.writeToSpreadSheet(googleSheetsService.SPREADSHEET_ID, order.toList(), "Order!A:H")
-        val email = googleEmailClient.createEmail(order.creator, "yajneshvar@tst-ims.com", "New Order for ${order.customerId}", order.toEmailText() )
+        val email = googleEmailClient.createEmail(order.creator, "yajneshvar@tst-ims.com", "New Order for ${order.recepient?.customerId}", order.toEmailText() )
         googleEmailClient.sendEmail("yajneshvar@tst-ims.com", email!!)
         return if (sheetResponse != null) {
             HttpResponse.accepted<Order>().body(order)
