@@ -49,6 +49,7 @@ class BookController {
     @Get(value = "/items")
     // @PermitAll
     fun itemsOrProducts(): HttpResponse<List<ItemOrProduct>> {
+        log.info("Getting items!!")
         val items = firestoreService.getItems()
         val products = firestoreService.getProducts()
         val itemsOrProducts = items.map { it.toItemOrProduct() } + products.map { it.toItemOrProduct() } 

@@ -7,6 +7,7 @@ import com.google.api.services.gmail.GmailScopes
 import com.google.api.services.gmail.model.Message
 import com.google.auth.http.HttpCredentialsAdapter
 import com.google.auth.oauth2.GoogleCredentials
+import jakarta.inject.Inject
 import org.apache.commons.codec.binary.Base64
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -19,12 +20,12 @@ import javax.mail.internet.InternetAddress
 import javax.mail.internet.MimeMessage
 
 @Singleton
-class GoogleGmailService {
+class GoogleGmailService constructor(@Inject var credentials: GoogleCredentials) {
 
     private val httpTransport = GoogleNetHttpTransport.newTrustedTransport()
     private val jacksonFactory = GsonFactory.getDefaultInstance()
-    val credentials = GoogleCredentials.fromStream(readCredentials()).createScoped(GmailScopes.GMAIL_SEND).createDelegated("yajneshvar@tst-ims.com")
-    val GMAIL = Gmail.Builder(httpTransport, jacksonFactory, HttpCredentialsAdapter(credentials)).build()
+    val scopedCredentials: GoogleCredentials = credentials.createScoped(GmailScopes.GMAIL_SEND).createDelegated("yajneshvar@tst-ims.com")
+    val GMAIL = Gmail.Builder(httpTransport, jacksonFactory, HttpCredentialsAdapter(scopedCredentials)).build()
     /**
      * Create a MimeMessage using the parameters provided.
      *
@@ -75,10 +76,6 @@ class GoogleGmailService {
         val returnedMessage = GMAIL.users().messages().send(user, message).execute()
         println(returnedMessage.id)
         println(returnedMessage.toPrettyString())
-    }
-
-    companion object {
-        fun readCredentials(): InputStream = this::class.java.getResourceAsStream("/GoogleCredential.json")
     }
 
 }

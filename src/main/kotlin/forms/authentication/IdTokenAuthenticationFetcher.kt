@@ -23,8 +23,10 @@ class IdTokenAuthenticationFetcher @Inject constructor(
         return flow {
             val authorization = request?.headers?.authorization
             if (authorization?.isPresent == true) {
+                log.info("Verifying user");
                 val idToken = authorization.get().substringAfter(" ")
                 val firebaseToken = firebaseAuthService.verifyIdToken(idToken)
+                log.info("Verified user ${firebaseToken.email}");
                 val jwtClaimset = JWTClaimsSet.Builder()
                         .subject(firebaseToken.email)
                         .jwtID(firebaseToken.uid)
