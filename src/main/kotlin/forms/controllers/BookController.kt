@@ -33,11 +33,11 @@ class BookController {
     @Inject lateinit var excelParser: ExcelParser
 
     @Get
-    fun getBooks(): HttpResponse<List<Book>> {
+    fun getBooks(): HttpResponse<List<ItemOrProduct>> {
         val values = googleSheetsService.readFromSpreadSheet(googleSheetsService.SPREADSHEET_ID, "Books!A:F")
         val books = values?.drop(1)?.map {
             val bookValues = it as List<String>
-            Book(bookValues[0], bookValues[1], bookValues[5])
+            ItemOrProduct(bookValues[1], bookValues[0], bookValues[1], bookValues[5], "Item")
         }
         return if (books == null) {
             HttpResponse.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -47,7 +47,6 @@ class BookController {
     }
 
     @Get(value = "/items")
-    // @PermitAll
     fun itemsOrProducts(): HttpResponse<List<ItemOrProduct>> {
         log.info("Getting items!!")
         val items = firestoreService.getItems()
@@ -55,8 +54,7 @@ class BookController {
         val itemsOrProducts = items.map { it.toItemOrProduct() } + products.map { it.toItemOrProduct() } 
         return HttpResponse.accepted<List<ItemOrProduct>>().body(itemsOrProducts)
     }
-    
-    // @PermitAll
+
     @Post(value = "/upload", consumes = [MediaType.ALL]) 
     fun uploadBytes(file: ByteArray, fileName: String): HttpResponse<String> { 
         return try {
